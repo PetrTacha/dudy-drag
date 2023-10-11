@@ -1,9 +1,10 @@
 {
-    "images": [
+    "groupParts": [
         {
             "name": "Borduny",
-            "images": [
-                "assets/dechova_trubice/d1.png"
+            "parts": [
+                "assets/borduny/b2.svg",
+                "assets/borduny/b1.svg"
             ]
         }
     ]

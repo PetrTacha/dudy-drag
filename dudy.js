@@ -1,88 +1,124 @@
-// function readTextFile(file, callback) {
-//     var rawFile = new XMLHttpRequest();
-//     rawFile.overrideMimeType("application/json");
-//     rawFile.open("GET", file, false);
-//     console.log("-> rawFile", rawFile);
-//     rawFile.onload = () => callback(rawFile.responseText);
-//     rawFile.send(null);
-// }
-//
-// readTextFile("config.json", function(text){
-//     data = JSON.parse(text)
-//     console.log("-> data", data);
-//
-//     squareArray = new Array(0);
-//
-//     initializeBoard();
-//
-// });
-//
-//
-// function initializeBoard() {
-//     const seznam = document.querySelector("#seznam");
-//     console.log("-> seznam", seznam);
-//     const canvas =  document.createElement("canvas");
-//
-//     seznam.appendChild(canvas)
-//     imageUrls = data.images[0].images[0];
-//     console.log("-> imageUrls", imageUrls);
-//
-//     const img = document.createElement("img");
-//     img.src = imageUrls;
-//
-//     let context = canvas.getContext('2d');
-//
-//     make_base();
-//
-//     function make_base()
-//     {
-//         let base_image = new Image();
-//         base_image.src = imageUrls;
-//         base_image.onload = function(){
-//             context.drawImage(base_image, 0, 0);
-//         }
-//     }
-//
-// }
+function readTextFile(file, callback) {
+    var rawFile = new XMLHttpRequest();
+    rawFile.overrideMimeType("application/json");
+    rawFile.open("GET", file, false);
+    console.log("-> rawFile", rawFile);
+    rawFile.onload = () => callback(rawFile.responseText);
+    rawFile.send(null);
+}
 
-const circle = document.querySelector("#circle");
-circle.addEventListener("click",(e)=>{
-    console.log("-> e", e);
-    event.preventDefault();
-    console.log("CLICKEd")
-})
+
+let configData = null;
 
 
 
 
-const svgContainer = document.getElementById('svg-container');
-const images = document.querySelectorAll('image'); // Select all image elements
 
-images.forEach((image, index) => {
-    image.addEventListener('click', () => {
-        const x = event.clientX - svgContainer.getBoundingClientRect().left;
-        const y = event.clientY - svgContainer.getBoundingClientRect().top;
+const dragAndMove = () => {
+    var elements = Array.from(document.querySelectorAll('svg .selector'));
+    console.log("-> elements", elements);
+    let offsetX, offsetY, isDragging = false;
 
-        // Create a transparent rectangle to sample the pixel
-        const transparentRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        transparentRect.setAttribute('x', x);
-        transparentRect.setAttribute('y', y);
-        transparentRect.setAttribute('width', 1);
-        transparentRect.setAttribute('height', 1);
-        transparentRect.setAttribute('opacity', 0);
+    elements.forEach(function (el) {
+        el.addEventListener("mousedown", start);
+        el.addEventListener("mousemove", move);
+        el.addEventListener("touchstart", start);
+        el.addEventListener("touchmove", move);
+    })
 
-        // Append the transparent rectangle to the SVG container
-        svgContainer.appendChild(transparentRect);
+    function start(e) {
+        console.log("-> START e", e);
+        elements.forEach(part => {
+            part.closest("svg").style.zIndex = 1;
+        })
+        isDragging = true;
+        const {left, top} = e.target.getBoundingClientRect();
+        // Get the first touch point
+        if (e.touches[0]) {
 
-        // Use getComputedStyle to get the computed style of the topmost image at the click position
-        const topImageComputedStyle = getComputedStyle(transparentRect);
+            const touch = e.touches[0];
+            offsetX = touch.clientX - left;
+            offsetY = touch.clientY - top;
+        } else {
+            offsetX = e.clientX - left;
+            offsetY = e.clientY - top;
+        }
+        // e.target.style.cursor = 'grabbing';
+        e.target.closest("svg").style.zIndex = 5;
+    }
 
-        // Check if the top image is nontransparent
-        if (topImageComputedStyle.fill !== 'none' || topImageComputedStyle.opacity !== '0') {
-            alert(`Clicked on a nontransparent section of image ${index + 1}`);
+    function move(e) {
+
+        if (!isDragging) return;
+
+        const targetSvg = e.target.closest("svg");
+
+
+        if (e.touches && e.touches[0]) {
+            const touch = e.touches[0];
+
+            const currentTransform = `translate(${(touch.clientX - offsetX)}, ${(touch.clientY - offsetY)})`;
+
+            targetSvg.setAttribute("transform", currentTransform);
+
+        }
+        else{
+
+            const newTransform = `translate(${e.clientX - offsetX}, ${e.clientY - offsetY})`;
+
+            // Set the updated transform attribute to the SVG element
+            targetSvg.setAttribute("transform", newTransform);
         }
 
-        // Remove the transparent rectangle from the SVG container
-        svgContainer.removeChild(transparentRect);
+
+    }
+
+    document.addEventListener('mouseup', (e) => {
+        if (isDragging) {
+            isDragging = false;
+            // e.target.style.cursor = 'grab';
+        }
     });
+}
+
+async function initializeBoard() {
+    const dudyApp = document.querySelector("#dudyApp");
+    const groupParts = configData.groupParts || [];
+
+
+
+        groupParts.forEach(group => {
+            group.parts.forEach(partUrl => {
+
+                console.log("-> partUrl", partUrl);
+                async function printFiles () {
+                    console.log("-> PRINT SVG");
+                    let url = await fetch(partUrl);
+                    let text = await url.text();
+                    const svgWrapper = document.createElement("div");
+                    svgWrapper.classList.add("svgWrapper")
+                    svgWrapper.innerHTML = text;
+                    dudyApp.appendChild(svgWrapper);
+                }
+
+                printFiles().then(() => {
+                    console.log("Part added: ", partUrl)
+
+                    dragAndMove();
+                })
+
+
+            })
+        })
+
+
+}
+
+
+readTextFile("config.json", function (text) {
+    configData = JSON.parse(text)
+    console.log("-> data", configData);
+
+    initializeBoard();
+
 });
