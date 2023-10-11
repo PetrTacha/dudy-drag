@@ -20,8 +20,8 @@ const dragAndMove = () => {
     let offsetX, offsetY, isDragging = false;
 
     elements.forEach(function (el) {
-        el.addEventListener("mousedown", start);
-        el.addEventListener("mousemove", move);
+        // el.addEventListener("mousedown", start);
+        // el.addEventListener("mousemove", move);
         el.addEventListener("touchstart", start);
         el.addEventListener("touchmove", move);
     })
@@ -33,12 +33,18 @@ const dragAndMove = () => {
         })
         isDragging = true;
         const {left, top} = e.target.getBoundingClientRect();
+        console.log("-> left", left);
+        console.log("-> top", top);
         // Get the first touch point
         if (e.touches && e.touches[0]) {
 
             const touch = e.touches[0];
+            console.log("->  touch.clientX",  touch.clientX);
+            console.log("-> touch.clientY ", touch.clientY );
             offsetX = touch.clientX - left;
+            console.log("-> offsetX", offsetX);
             offsetY = touch.clientY - top;
+            console.log("-> offsetY", offsetY);
         } else {
             offsetX = e.clientX - left;
             offsetY = e.clientY - top;
@@ -57,13 +63,22 @@ const dragAndMove = () => {
         if (e.touches && e.touches[0]) {
             const touch = e.touches[0];
 
-            const currentTransform = `translate(${(touch.clientX - offsetX)}, ${(touch.clientY - offsetY)})`;
+            currentTransform = targetSvg.getAttribute("transform") || "";
 
-            targetSvg.setAttribute("transform", currentTransform);
+            let updatedTransform = "";
+            if (currentTransform.includes("translate")) {
+                updatedTransform =  currentTransform.replace(/translate\((.*?)\)/, `translate(${(touch.clientX - offsetX)}, ${(touch.clientY - offsetY)})`);
+            }
+            else{
+                updatedTransform =  currentTransform + ` translate(${(touch.clientX - offsetX)}, ${(touch.clientY - offsetY)})`;
+            }
+            // const currentTransform = `translate(${(touch.clientX - offsetX)}, ${(touch.clientY - offsetY)})`;
+
+            targetSvg.setAttribute("transform", updatedTransform);
 
         }
         else{
-
+            //TODO mouse
             const newTransform = `translate(${e.clientX - offsetX}, ${e.clientY - offsetY})`;
 
             // Set the updated transform attribute to the SVG element

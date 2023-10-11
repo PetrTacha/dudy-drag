@@ -3,8 +3,7 @@
         {
             "name": "Borduny",
             "parts": [
-                "assets/borduny/b2.svg",
-                "assets/borduny/b1.svg"
+                "assets/borduny/b2.svg"
             ]
         }
     ]
