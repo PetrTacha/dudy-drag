@@ -1,0 +1,11 @@
+{
+    "backgroundImageUrl": "assets/bg.png",
+    "winImg": "assets/button.png",
+    "pipes": [
+        {
+            "name": "Burdouny",
+            "parts": ["assets/0/pistala_1.glb", "assets/7/mech.glb"]
+        }
+    ]
+
+}
