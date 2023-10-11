@@ -20,13 +20,14 @@ type PipeConfig = {
     layer: number,
     model: string,
     name:string,
-    parts: string[]
+    parts: string[],
+    startingCoordinates: {x: number, y: number}
 }
 
 export type GameConfig = {
     backgroundImageUrl: string,
     winImg: string;
-    pipes: PipeConfig[]
+    pipeGroups: PipeConfig[]
 }
 
 
@@ -39,7 +40,7 @@ export class Part {
     snapped = false;
 
 
-    constructor(piece: { x: number, y: number}, mesh: THREE.Mesh, size: { x: number, y: number }, config: string) {
+    constructor(piece: { x: number, y: number}, mesh: THREE.Mesh, size: { x: number, y: number }) {
         this.size = size;
         this.mesh = mesh;
         this.mesh.userData.piece = this;

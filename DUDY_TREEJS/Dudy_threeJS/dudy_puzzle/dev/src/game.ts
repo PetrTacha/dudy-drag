@@ -35,11 +35,9 @@ export class PipeGame {
     selected: THREE.Mesh | undefined;
     piecesCount: number = 0;
     pipesCount: number = 0;
-    first_game = true;
     scaleFactor = 3;
 
     constructor(config: GameConfig, canvas: HTMLCanvasElement) {
-        console.log("-> AAAAAAAAA");
         canvas.width = 1919;
         canvas.height = 1079;
 
@@ -66,36 +64,33 @@ export class PipeGame {
     }
 
     init() {
-        if (this.first_game) {
-            //this.initBackground();
-            this.initDragControls();
-            this.first_game = false;
-        }
-        // if(this.pipes.size == 0){
-        //     this.initPipes();
-        // }
         this.startTime = Date.now();
-        //console.log(this.scene);
+
         this.initParts();
-        this.renderToolsMenu()
+        this.renderToolsMenu();
+
+        this.initDragControls();
     }
 
     restart() {
-        //console.log("restarting")
-        this.finished = false;
-        // remove pipes from scene
-        if (this.pipes.size > 0) {
-            for (var i = 0; i < this.config.pipes.length; i++) {
-                var pipe = this.pipes.get(i);
-                //remove pieces from scene
-                for (let j = 0; j < pipe.parts.length; j++) {
-                    this.scene.remove(pipe.parts[j].mesh);
-                }
-                this.scene.remove(pipe.mesh)
-            }
-            this.pipes = new Map();
-            this.scene.remove(...this.movables);
+        for (const part of this.movables) {
+            this.scene.remove(part);
         }
+        //console.log("restarting")
+        // this.finished = false;
+        // // remove pipes from scene
+        // if (this.pipes.size > 0) {
+        //     for (let i = 0; i < this.config.pipes.length; i++) {
+        //         let pipe = this.pipes.get(i);
+        //         //remove pieces from scene
+        //         for (let j = 0; j < pipe.parts.length; j++) {
+        //             this.scene.remove(pipe.parts[j].mesh);
+        //         }
+        //         this.scene.remove(pipe.mesh)
+        //     }
+        //     this.pipes = new Map();
+        //     this.scene.remove(...this.movables);
+        // }
 
         this.init();
     }
@@ -118,22 +113,25 @@ export class PipeGame {
         dragControls.addEventListener('dragstart', (event) => {
             //get dragged mesh
             this.selected = event.object as THREE.Mesh;
-            //console.log(this.selected);
+            this.movables.forEach(mesh => {
+                mesh.position.setZ(10);
+            })
+            this.selected?.position.setZ(100);
         });
 
         dragControls.addEventListener('drag', () => {
             if (this.selected && this.pipes.size > 0 && this.selected?.userData.piece.isOn() == true) {
-                var pipe_id = this.selected?.userData.piece.pipe_id;
+                let pipe_id = this.selected?.userData.piece.pipe_id;
                 this.selected?.userData.piece.snapOnPipe(this.pipes.get(pipe_id).position, this.scene)
             } else {
-                this.selected?.position.setZ(this.piecesCount * 2);
+                this.selected?.position.setZ(100);
             }
         });
 
         dragControls.addEventListener('dragend', (event) => {
             //this.selected?.position.setZ(this.selected?.userData.piece.layer);
             if (this.selected && this.pipes.size > 0) {
-                var pipe_id = this.selected?.userData.piece.pipe_id;
+                let pipe_id = this.selected?.userData.piece.pipe_id;
                 if (this.selected.position.distanceTo(this.pipes.get(pipe_id).getPosition()) < REQUIRED_DISTANCE) {
                     if (!this.pipes.get(pipe_id).isOnPipe(this.selected?.userData.piece.id)) {
                         this.pipes.get(pipe_id).setLayer(this.selected?.userData.piece.layer);
@@ -164,27 +162,38 @@ export class PipeGame {
     }
 
     initParts() {
-        const pipe_config = this.config.pipes[0].parts[0];
+        // const pipe_config = this.config.pipeGroups[0].parts[0];
+        const pipe_config = this.config.pipeGroups;
         if (!pipe_config) return;
-        this.model_loader.load(pipe_config, (gltf) => {
-            const model = gltf.scene.children[0] as THREE.Mesh;
-            const mat = model.material as THREE.MeshBasicMaterial;
-            mat.transparent = true;
-            if (mat.map)
-                mat.map.encoding = THREE.LinearEncoding;
+        for (const pipeGroup of this.config.pipeGroups) {
+            const startingCoordinates = pipeGroup.startingCoordinates;
+            for (const part of pipeGroup.parts) {
+                this.model_loader.load(part, (gltf) => {
+                    const model = gltf.scene.children[0] as THREE.Mesh;
+                    const mat = model.material as THREE.MeshBasicMaterial;
+                    mat.transparent = true;
+                    if (mat.map)
+                        mat.map.encoding = THREE.LinearEncoding;
 
-            model.scale.set(PIPE_SCALE, PIPE_SCALE, 1);
-            const piece = new Part(
-                this.initPartPosition(),
-                model,
-                { x: 200, y: 200 },
-                pipe_config
-            );
+                    model.scale.set(PIPE_SCALE, PIPE_SCALE, 1);
+                    const piece = new Part(
+                        this.initPartPosition(startingCoordinates.x, startingCoordinates.y),
+                        model,
+                        { x: 200, y: 200 }
+                    );
 
-            // this.pipes.get(pipe_id).addPart(piece);
-            this.movables.push(piece.mesh);
-            this.scene.add(piece.mesh);
-        });
+                    // this.pipes.get(pipe_id).addPart(piece);
+                    this.movables.push(piece.mesh);
+                    this.scene.add(piece.mesh);
+                });
+
+
+            }
+        }
+
+
+
+
     }
 
     renderToolsMenu() {
@@ -201,19 +210,21 @@ export class PipeGame {
     <div class="tool" data-tool="minus"> 
         MINUS
     </div>
-    <div class="tool" data-tool="rotate">
-        ROTATE
+    <div class="tool" data-tool="rotateLeft">
+        ROTATE LEFT
     </div>
-    <div class="tool" data-tool="mirror">
-    MIRROR
+    <div class="tool" data-tool="rotateRight">
+    ROTATE RIGHT
     </div>
+    <div class="tool" data-tool="reset">RESET</div>
 `;
 
         /* Main menu is visible no need to restart game */
         const toolsBt = canvasToolMenu.querySelectorAll('.tool') as NodeList;
 
         for (let i = 0; i < toolsBt.length; i++) {
-            toolsBt[i].onclick = (e) => {
+            // @ts-ignore
+            toolsBt[i].onclick = (e: any) => {
                 console.log("-> e", e.target.dataset.tool);
                 switch (e.target.dataset.tool) {
                     case "plus":
@@ -222,11 +233,14 @@ export class PipeGame {
                     case "minus":
                         this.toolMinusEvent();
                         break;
-                    case "rotate":
-                        this.toolRotateEvent();
+                    case "rotateLeft":
+                        this.toolRotateEvent(1);
                         break;
-                    case "mirror":
-                        this.toolMirrorEvent();
+                    case "rotateRight":
+                        this.toolRotateEvent(-1);
+                        break;
+                    case "reset":
+                        this.restart();
                         break;
                     default:
                         break;
@@ -236,19 +250,24 @@ export class PipeGame {
         root.appendChild(canvasToolMenu);
     }
 
-    private initPartPosition() {
-        var position_x = -375;
-        var position_y = -50;
+    private initPartPosition(x: number, y: number) {
+        let position_x = -375;
+        let position_y = -50;
 
-        var random_offset_x = Math.floor(Math.random() * 300);
-        var random_offset_y = Math.floor(Math.random() * 100);
+        let random_offset_x = Math.floor(Math.random() * 300);
+        let random_offset_y = Math.floor(Math.random() * 100);
         position_x += random_offset_x;
         position_y += random_offset_y;
 
-        return { x: position_x, y: position_y };
+        let randomX = Math.floor(Math.random() * 10);
+        let randomY = Math.floor(Math.random() * 10);
+        // return { x: position_x, y: position_y };
+        //TODO split
+        return { x: x+randomX, y: y+randomY, z: 10 };
     }
 
     private toolPlusEvent() {
+        console.log("-> this.selected", this.selected);
         if (!this.selected) return;
         const boundingBox = new THREE.Box3().setFromObject(this.selected);
         const center = new THREE.Vector3();
@@ -274,9 +293,10 @@ export class PipeGame {
         this.selected.position.add(translation);
     }
 
-    private toolRotateEvent() {
+    private toolRotateEvent(direction: number) {
+
         if (!this.selected) return;
-        const angleInRadians = THREE.MathUtils.degToRad(15);
+        const angleInRadians = THREE.MathUtils.degToRad( direction * 15);
         const axisOfRotation = new THREE.Vector3(0, 0, 1);
 
         const boundingBox = new THREE.Box3().setFromObject(this.selected);
@@ -294,18 +314,6 @@ export class PipeGame {
 
     }
 
-    private toolMirrorEvent() {
-        //TODO
-        if (!this.selected) return;
-        // Define the axis along which you want to mirror (for example, mirroring along the X-axis)
-        // const axis = new THREE.Vector3(1, 0, 0); // X-axis
-
-// Create a scaling vector to mirror the mesh along the specified axis
-//         const scaleVector = new THREE.Vector3(-1, 1, 1); // Mirroring along X-axis
-// console.log("-> rotateASDAS");
-// // Apply the scaling transformation to the mesh
-//         this.selected.scale.copy(scaleVector);
-    }
 }
 
 
