@@ -11,6 +11,10 @@ function readTextFile(file, callback) {
 let configData = null;
 
 
+let scale = 1;
+let translateX = 0;
+let translateY = 0;
+let rotate = 0;
 
 
 
@@ -18,6 +22,7 @@ const dragAndMove = () => {
     var elements = Array.from(document.querySelectorAll('svg .selector'));
     console.log("-> elements", elements);
     let offsetX, offsetY, isDragging = false;
+
 
     elements.forEach(function (el) {
         // el.addEventListener("mousedown", start);
@@ -29,7 +34,7 @@ const dragAndMove = () => {
     function start(e) {
         console.log("-> START e", e);
         elements.forEach(part => {
-            part.closest("svg").style.zIndex = 1;
+            part.closest("svg").style.zIndex = "1";
         })
         isDragging = true;
         const {left, top} = e.target.getBoundingClientRect();
@@ -37,7 +42,6 @@ const dragAndMove = () => {
         console.log("-> top", top);
         // Get the first touch point
         if (e.touches && e.touches[0]) {
-
             const touch = e.touches[0];
             console.log("->  touch.clientX",  touch.clientX);
             console.log("-> touch.clientY ", touch.clientY );
@@ -50,7 +54,7 @@ const dragAndMove = () => {
             offsetY = e.clientY - top;
         }
         // e.target.style.cursor = 'grabbing';
-        e.target.closest("svg").style.zIndex = 5;
+        e.target.closest("svg").style.zIndex = "5";
     }
 
     function move(e) {
@@ -67,7 +71,12 @@ const dragAndMove = () => {
 
             let updatedTransform = "";
             if (currentTransform.includes("translate")) {
-                updatedTransform =  currentTransform.replace(/translate\((.*?)\)/, `translate(${(touch.clientX - offsetX)}, ${(touch.clientY - offsetY)})`);
+                translateX = (touch.clientX - offsetX);
+                translateY = (touch.clientY - offsetY);
+                updatedTransform = `translate(${translateX},${translateY}) scale(${scale}) rotate(${rotate})`
+
+
+                // updatedTransform =  currentTransform.replace(/translate\((.*?)\)/, `translate(${(touch.clientX - offsetX)}, ${(touch.clientY - offsetY)})`);
             }
             else{
                 updatedTransform =  currentTransform + ` translate(${(touch.clientX - offsetX)}, ${(touch.clientY - offsetY)})`;
@@ -128,6 +137,84 @@ async function initializeBoard() {
 
 
 }
+
+
+/////////////////BUTTON PLUS//////////////////////////////////////
+
+let size = 1;
+let sizeStep = 0.3
+let degree = 15;
+document.querySelector("#toolsPlus").addEventListener("click", e => {
+    const targetSvg = document.querySelector(".svg-part");
+
+    let currentTransform = targetSvg.getAttribute("transform") || "";
+
+    if (scale < sizeStep*8) {
+        scale = scale + sizeStep
+    }
+    let updatedTransform = "";
+    // if (currentTransform.includes("scale")) {
+    //
+    //     updatedTransform = currentTransform.replace(/scale\((.*?)\)/, `scale(${size})`);
+    // } else {
+    //     updatedTransform = currentTransform + ` scale(${size})`;
+    // }
+
+    updatedTransform = `translate(${translateX},${translateY}) scale(${scale}) rotate(${rotate})`
+    targetSvg.setAttribute("transform", updatedTransform);
+})
+
+document.querySelector("#toolsMinus").addEventListener("click", e => {
+    const targetSvg = document.querySelector(".svg-part");
+
+    let currentTransform = targetSvg.getAttribute("transform") || "";
+    if (scale > sizeStep) {
+        scale = scale - sizeStep
+    }
+    let updatedTransform = "";
+    // if (currentTransform.includes("scale")) {
+    //     updatedTransform = currentTransform.replace(/scale\((.*?)\)/, `scale(${size})`);
+    // } else {
+    //     updatedTransform = currentTransform + ` scale(${size})`;
+    // }
+    updatedTransform = `translate(${translateX},${translateY}) scale(${scale}) rotate(${rotate})`
+    targetSvg.setAttribute("transform", updatedTransform);
+})
+
+document.querySelector("#toolsRotateLeft").addEventListener("click", e => {
+    const targetSvg = document.querySelector(".svg-part");
+
+    let currentTransform = targetSvg.getAttribute("transform") || "";
+
+    rotate = rotate - 15
+    let updatedTransform = "";
+    // if (currentTransform.includes("rotate")) {
+    //     updatedTransform = currentTransform.replace(/rotate\((.*?)\)/, `rotate(${degree})`);
+    // } else {
+    //     updatedTransform = currentTransform + ` rotate(${degree})`;
+    // }
+    updatedTransform = `translate(${translateX},${translateY}) scale(${scale}) rotate(${rotate})`
+    targetSvg.setAttribute("transform", updatedTransform);
+})
+
+document.querySelector("#toolsRotateRight").addEventListener("click", e => {
+    const targetSvg = document.querySelector(".svg-part");
+
+    let currentTransform = targetSvg.getAttribute("transform") || "";
+
+    rotate = rotate + 15
+    let updatedTransform = "";
+    // if (currentTransform.includes("rotate")) {
+    //     updatedTransform = currentTransform.replace(/rotate\((.*?)\)/, `rotate(${degree})`);
+    // } else {
+    //     updatedTransform = currentTransform + ` rotate(${degree})`;
+    // }
+    updatedTransform = `translate(${translateX},${translateY}) scale(${scale}) rotate(${rotate})`
+    targetSvg.setAttribute("transform", updatedTransform);
+})
+
+
+
 
 
 readTextFile("config.json", function (text) {

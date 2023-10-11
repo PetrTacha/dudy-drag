@@ -67,84 +67,11 @@
         <button id="toolsPlus" class="plus">ZVETSIT</button>
         <button id="toolsMinus" class="plus">ZMENSIT</button>
         <button id="toolsRotateLeft" class="plus">ROTATE LEFT</button>
-
         <button id="toolsRotateRight" class="plus">ROTATE Right</button>
     </div>
 
     <div class="circle"></div>
 </main>
-
-
-<script>
-    let size = 1;
-    let sizeStep = 0.3
-    let degree = 15;
-    /////////////////BUTTON PLUS//////////////////////////////////////
-    document.querySelector("#toolsPlus").addEventListener("click", e => {
-        const targetSvg = document.querySelector(".svg-part");
-
-        let currentTransform = targetSvg.getAttribute("transform") || "";
-
-        if (size < sizeStep*8) {
-            size = size + sizeStep
-        }
-        let updatedTransform = "";
-        if (currentTransform.includes("scale")) {
-            updatedTransform = currentTransform.replace(/scale\((.*?)\)/, `scale(${size})`);
-        } else {
-            updatedTransform = currentTransform + ` scale(${size})`;
-        }
-        targetSvg.setAttribute("transform", updatedTransform);
-    })
-
-    document.querySelector("#toolsMinus").addEventListener("click", e => {
-        const targetSvg = document.querySelector(".svg-part");
-
-        let currentTransform = targetSvg.getAttribute("transform") || "";
-        if (size > sizeStep) {
-            size = size - sizeStep
-        }
-        let updatedTransform = "";
-        if (currentTransform.includes("scale")) {
-            updatedTransform = currentTransform.replace(/scale\((.*?)\)/, `scale(${size})`);
-        } else {
-            updatedTransform = currentTransform + ` scale(${size})`;
-        }
-        targetSvg.setAttribute("transform", updatedTransform);
-    })
-
-    document.querySelector("#toolsRotateLeft").addEventListener("click", e => {
-        const targetSvg = document.querySelector(".svg-part");
-
-        let currentTransform = targetSvg.getAttribute("transform") || "";
-
-        degree = degree - 15
-        let updatedTransform = "";
-        if (currentTransform.includes("rotate")) {
-            updatedTransform = currentTransform.replace(/rotate\((.*?)\)/, `rotate(${degree})`);
-        } else {
-            updatedTransform = currentTransform + ` rotate(${degree})`;
-        }
-        targetSvg.setAttribute("transform", updatedTransform);
-    })
-
-    document.querySelector("#toolsRotateRight").addEventListener("click", e => {
-        const targetSvg = document.querySelector(".svg-part");
-
-        let currentTransform = targetSvg.getAttribute("transform") || "";
-
-        degree = degree + 15
-        let updatedTransform = "";
-        if (currentTransform.includes("rotate")) {
-            updatedTransform = currentTransform.replace(/rotate\((.*?)\)/, `rotate(${degree})`);
-        } else {
-            updatedTransform = currentTransform + ` rotate(${degree})`;
-        }
-        targetSvg.setAttribute("transform", updatedTransform);
-    })
-
-
-</script>
 
 
 <script type="text/javascript" src="./dudy.js"></script>
