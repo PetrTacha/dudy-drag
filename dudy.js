@@ -34,7 +34,7 @@ const dragAndMove = () => {
         isDragging = true;
         const {left, top} = e.target.getBoundingClientRect();
         // Get the first touch point
-        if (e.touches[0]) {
+        if (e.touches && e.touches[0]) {
 
             const touch = e.touches[0];
             offsetX = touch.clientX - left;
