@@ -3,9 +3,6 @@ import { DragControls } from 'three/examples/jsm/controls/DragControls';
 import { GameConfig, Part, PIPE_SCALE, PIPE_POSITION_LEFT, PIPE_POSITION_RIGHT } from './parts';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
-//margins for initial position generation
-const REQUIRED_DISTANCE = 100000000;
-
 function resizeCanvas(canvas: HTMLCanvasElement) {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -35,9 +32,13 @@ export class PipeGame {
     pipesCount: number = 0;
     scaleFactor = 3;
     firstLoad = true;
+    currentZIndex = 1;
 
     constructor(config: GameConfig, canvas: HTMLCanvasElement) {
-        canvas.width = 1919;
+        // canvas.width = 1919;
+        // canvas.height = 1079;
+
+        canvas.width = 1300;
         canvas.height = 1079;
 
         this.scene = new THREE.Scene();
@@ -47,7 +48,7 @@ export class PipeGame {
             1,
             1000
         );
-        this.camera.position.z = 500;
+        this.camera.position.z = 1000;
         this.renderer = new THREE.WebGLRenderer({ canvas: canvas });
         this.renderer.setSize(canvas.width, canvas.height);
         this.loader = new THREE.TextureLoader();
@@ -72,28 +73,15 @@ export class PipeGame {
 
         this.initParts();
         this.renderToolsMenu();
+        this.renderSelectModelMenu();
 
     }
 
     restart() {
+
         for (const part of this.movables) {
             this.scene.remove(part);
         }
-        //console.log("restarting")
-        // this.finished = false;
-        // // remove pipes from scene
-        // if (this.pipes.size > 0) {
-        //     for (let i = 0; i < this.config.pipes.length; i++) {
-        //         let pipe = this.pipes.get(i);
-        //         //remove pieces from scene
-        //         for (let j = 0; j < pipe.parts.length; j++) {
-        //             this.scene.remove(pipe.parts[j].mesh);
-        //         }
-        //         this.scene.remove(pipe.mesh)
-        //     }
-        //     this.pipes = new Map();
-        //     this.scene.remove(...this.movables);
-        // }
 
         this.init();
     }
@@ -110,20 +98,35 @@ export class PipeGame {
     }
 
 
+    updateZIndex() {
+        // I need to move z index of each movable to top on each other, but i have and camera on position z = 1000, so after that i have to reset z index and all movables
+        if(this.currentZIndex >= 999){
+            this.movables.forEach(mesh => {
+                mesh.position.setZ(1);
+            })
+            this.currentZIndex = 1
+        }
+        this.selected?.position.setZ(this.currentZIndex);
+        this.currentZIndex+=1;
+    }
+
+
     initDragControls() {
         const dragControls = new DragControls(this.movables, this.camera, this.canvas);
 
         dragControls.addEventListener('dragstart', (event) => {
             //get dragged mesh
             this.selected = event.object as THREE.Mesh;
-            this.movables.forEach(mesh => {
-                mesh.position.setZ(10);
-            })
-            this.selected?.position.setZ(100);
+            // this.movables.forEach(mesh => {
+            //     mesh.position.setZ(10);
+            // })
+
+            this.updateZIndex();
         });
 
         dragControls.addEventListener('drag', () => {
-            this.selected?.position.setZ(100);
+            this.selected?.position.setZ(this.currentZIndex);
+
         });
 
         dragControls.addEventListener('dragend', (event) => {
@@ -142,37 +145,58 @@ export class PipeGame {
         for (const pipeGroup of this.config.pipeGroups) {
             const startingCoordinates = pipeGroup.startingCoordinates;
             for (const part of pipeGroup.parts) {
-                this.model_loader.load(part, (gltf) => {
-                    const model = gltf.scene.children[0] as THREE.Mesh;
-                    const mat = model.material as THREE.MeshBasicMaterial;
-                    mat.transparent = true;
-                    if (mat.map)
-                        mat.map.encoding = THREE.LinearEncoding;
-
-                    model.scale.set(PIPE_SCALE, PIPE_SCALE, 1);
-                    const piece = new Part(
-                        this.initPartPosition(startingCoordinates.x, startingCoordinates.y),
-                        model,
-                        { x: 200, y: 200 }
-                    );
-
-                    // this.pipes.get(pipe_id).addPart(piece);
-                    this.movables.push(piece.mesh);
-                    this.scene.add(piece.mesh);
-                });
+                // this.addModelIntoScene(part)
+                // this.model_loader.load(`${part}.glb`, (gltf) => {
+                //     const model = gltf.scene.children[0] as THREE.Mesh;
+                //     const mat = model.material as THREE.MeshBasicMaterial;
+                //     mat.transparent = true;
+                //     if (mat.map)
+                //         mat.map.encoding = THREE.LinearEncoding;
+                //
+                //     model.scale.set(PIPE_SCALE, PIPE_SCALE, 1);
+                //     const piece = new Part(
+                //         this.initPartPosition(startingCoordinates.x, startingCoordinates.y),
+                //         model,
+                //         { x: 200, y: 200 }
+                //     );
+                //
+                //     this.movables.push(piece.mesh);
+                //     this.scene.add(piece.mesh);
+                // });
             }
         }
     }
 
+    addModelIntoScene(part: string) {
+        this.model_loader.load(`${part}.glb`, (gltf) => {
+            const model = gltf.scene.children[0] as THREE.Mesh;
+            const mat = model.material as THREE.MeshBasicMaterial;
+            mat.transparent = true;
+            console.log("-> this.canvas.width/2, this.canvas.height/2", this.canvas.width/2, this.canvas.height/2);
+            if (mat.map)
+                mat.map.encoding = THREE.LinearEncoding;
+
+            model.scale.set(PIPE_SCALE, PIPE_SCALE, 1);
+            const piece = new Part(
+                this.initPartPosition(100, 100),
+                model,
+                { x: 200, y: 200 }
+            );
+
+            // this.pipes.get(pipe_id).addPart(piece);
+            this.movables.push(piece.mesh);
+            this.scene.add(piece.mesh);
+            this.selected = piece.mesh;
+            this.updateZIndex();
+        });
+
+    }
+
     renderToolsMenu() {
 
-        const root = document.getElementById('root') as HTMLElement;
+        const root = document.querySelector('.container') as HTMLElement;
         const canvasToolMenu = document.createElement('div');
         canvasToolMenu.classList.add('canvas-tool-menu');
-
-        const a = this.config.icons[0];
-
-
         canvasToolMenu.innerHTML = `
     <div class="manipulation-tool">
         <div class="tool" data-tool="plus">
@@ -284,6 +308,33 @@ export class PipeGame {
         const translation = center.clone().sub(newCenter);
         this.selected.position.add(translation);
 
+
+    }
+
+    renderSelectModelMenu() {
+        let menuRef = document.querySelector("#select-menu");
+
+        this.config.pipeGroups.forEach(group => {
+            group.parts.forEach(part => {
+                if(!menuRef) return;
+                const imageWrapper = document.createElement('div');
+                imageWrapper.classList.add("insert-image");
+                imageWrapper.dataset.model = part;
+                imageWrapper.innerHTML = `<img src="${part}.png" alt="${part}">`
+                menuRef.appendChild(imageWrapper)
+            })
+
+        })
+
+        document.querySelectorAll(".insert-image").forEach(selectImage => {
+
+            console.log("-> selectImage", selectImage);
+            //TODO to touchstart
+            selectImage.addEventListener("click", e=>{
+                console.log("-> e.target", e.target?.dataset.model);
+                this.addModelIntoScene(e.target?.dataset.model);
+            })
+        })
 
     }
 

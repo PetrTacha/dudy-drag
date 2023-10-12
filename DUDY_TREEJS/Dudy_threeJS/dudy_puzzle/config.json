@@ -16,8 +16,8 @@
                 "y": 0
             },
             "parts": [
-                "assets/borduny/b1.glb",
-                "assets/borduny/b2.glb"
+                "assets/borduny/b1",
+                "assets/borduny/b2"
             ]
         },
         {
@@ -27,7 +27,7 @@
                 "y": 0
             },
             "parts": [
-                "assets/dechove_trubice/d1.glb"
+                "assets/dechove_trubice/d1"
             ]
         },
         {
@@ -46,9 +46,9 @@
                 "y": 300
             },
             "parts": [
-                "assets/hlavy/h1.glb",
-                "assets/hlavy/h2.glb",
-                "assets/hlavy/h3.glb"
+                "assets/hlavy/h1",
+                "assets/hlavy/h2",
+                "assets/hlavy/h3"
             ]
         },
         {
@@ -58,11 +58,11 @@
                 "y": 150
             },
             "parts": [
-                "assets/melodicke_pistaly/p1.glb",
-                "assets/melodicke_pistaly/p2.glb",
-                "assets/melodicke_pistaly/p3.glb",
-                "assets/melodicke_pistaly/p4.glb",
-                "assets/melodicke_pistaly/p5.glb"
+                "assets/melodicke_pistaly/p1",
+                "assets/melodicke_pistaly/p2",
+                "assets/melodicke_pistaly/p3",
+                "assets/melodicke_pistaly/p4",
+                "assets/melodicke_pistaly/p5"
             ]
         },
         {
@@ -72,14 +72,14 @@
                 "y": 0
             },
             "parts": [
-                "assets/zasobni_mech/mech1.glb",
-                "assets/zasobni_mech/mech2.glb",
-                "assets/zasobni_mech/mech3.glb",
-                "assets/zasobni_mech/mech4.glb",
-                "assets/zasobni_mech/mech5.glb",
-                "assets/zasobni_mech/mech6.glb",
-                "assets/zasobni_mech/mech7.glb",
-                "assets/zasobni_mech/mech8.glb"
+                "assets/zasobni_mech/mech1",
+                "assets/zasobni_mech/mech2",
+                "assets/zasobni_mech/mech3",
+                "assets/zasobni_mech/mech4",
+                "assets/zasobni_mech/mech5",
+                "assets/zasobni_mech/mech6",
+                "assets/zasobni_mech/mech7",
+                "assets/zasobni_mech/mech8"
             ]
         }
     ]
