@@ -1,83 +1,86 @@
 {
-  "backgroundImageUrl": "assets/bg.png",
-  "winImg": "assets/button.png",
-  "icons": [
-    "assets/icons/toolPlus.svg",
-    "assets/icons/toolMinus.svg",
-    "assets/icons/toolRotateRight.svg",
-    "assets/icons/toolRotateLeft.svg",
-    "assets/icons/toolTrash.svg"
-  ],
-  "pipeGroups": [
-    {
-      "name": "Borduny",
-      "startingCoordinates": {
-        "x": 0,
-        "y": 0
-      },
-      "parts": [
-        "assets/borduny/b1.glb",
-        "assets/borduny/b2.glb"
-      ]
-    },
-    {
-      "name": "Dechová trubice",
-      "startingCoordinates": {
-        "x": 300,
-        "y": 0
-      },
-      "parts": [
-        "assets/dechove_trubice/d1.glb"
-      ]
-    },
-    {
-      "name": "Dmýchací měchy",
-      "startingCoordinates": {
-        "x": 200,
-        "y": 200
-      },
-      "parts": [
-      ]
-    },
-    {
-      "name": "Halvy",
-      "startingCoordinates": {
-        "x": 300,
-        "y": 300
-      },
-      "parts": [
-      ]
-    },
-    {
-      "name": "Melodické píšťaly",
-      "startingCoordinates": {
-        "x": -300,
-        "y": 150
-      },
-      "parts": [
-        "assets/melodicke_pistaly/p1.glb",
-        "assets/melodicke_pistaly/p2.glb",
-        "assets/melodicke_pistaly/p3.glb",
-        "assets/melodicke_pistaly/p4.glb",
-        "assets/melodicke_pistaly/p5.glb"
-      ]
-    },
-    {
-      "name": "Zásobní měchy",
-      "startingCoordinates": {
-        "x": -800,
-        "y": 0
-      },
-      "parts": [
-        "assets/zasobni_mech/mech1.glb",
-        "assets/zasobni_mech/mech2.glb",
-        "assets/zasobni_mech/mech3.glb",
-        "assets/zasobni_mech/mech4.glb",
-        "assets/zasobni_mech/mech5.glb",
-        "assets/zasobni_mech/mech6.glb",
-        "assets/zasobni_mech/mech7.glb",
-        "assets/zasobni_mech/mech8.glb"
-      ]
-    }
-  ]
+    "backgroundImageUrl": "assets/bg.png",
+    "winImg": "assets/button.png",
+    "icons": [
+        "assets/icons/toolPlus.svg",
+        "assets/icons/toolMinus.svg",
+        "assets/icons/toolRotateRight.svg",
+        "assets/icons/toolRotateLeft.svg",
+        "assets/icons/toolTrash.svg"
+    ],
+    "pipeGroups": [
+        {
+            "name": "Borduny",
+            "startingCoordinates": {
+                "x": 0,
+                "y": 0
+            },
+            "parts": [
+                "assets/borduny/b1.glb",
+                "assets/borduny/b2.glb"
+            ]
+        },
+        {
+            "name": "Dechová trubice",
+            "startingCoordinates": {
+                "x": 300,
+                "y": 0
+            },
+            "parts": [
+                "assets/dechove_trubice/d1.glb"
+            ]
+        },
+        {
+            "name": "Dmýchací měchy",
+            "startingCoordinates": {
+                "x": 200,
+                "y": 200
+            },
+            "parts": [
+            ]
+        },
+        {
+            "name": "Halvy",
+            "startingCoordinates": {
+                "x": 300,
+                "y": 300
+            },
+            "parts": [
+                "assets/hlavy/h1.glb",
+                "assets/hlavy/h2.glb",
+                "assets/hlavy/h3.glb"
+            ]
+        },
+        {
+            "name": "Melodické píšťaly",
+            "startingCoordinates": {
+                "x": -300,
+                "y": 150
+            },
+            "parts": [
+                "assets/melodicke_pistaly/p1.glb",
+                "assets/melodicke_pistaly/p2.glb",
+                "assets/melodicke_pistaly/p3.glb",
+                "assets/melodicke_pistaly/p4.glb",
+                "assets/melodicke_pistaly/p5.glb"
+            ]
+        },
+        {
+            "name": "Zásobní měchy",
+            "startingCoordinates": {
+                "x": -800,
+                "y": 0
+            },
+            "parts": [
+                "assets/zasobni_mech/mech1.glb",
+                "assets/zasobni_mech/mech2.glb",
+                "assets/zasobni_mech/mech3.glb",
+                "assets/zasobni_mech/mech4.glb",
+                "assets/zasobni_mech/mech5.glb",
+                "assets/zasobni_mech/mech6.glb",
+                "assets/zasobni_mech/mech7.glb",
+                "assets/zasobni_mech/mech8.glb"
+            ]
+        }
+    ]
 }

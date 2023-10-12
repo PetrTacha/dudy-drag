@@ -1,5 +1,5 @@
 function readTextFile(file, callback) {
-    var rawFile = new XMLHttpRequest();
+    let rawFile = new XMLHttpRequest();
     rawFile.overrideMimeType("application/json");
     rawFile.open("GET", file, false);
     console.log("-> rawFile", rawFile);
@@ -9,7 +9,6 @@ function readTextFile(file, callback) {
 
 
 let configData = null;
-
 
 let scale = 1;
 let translateX = 0;
