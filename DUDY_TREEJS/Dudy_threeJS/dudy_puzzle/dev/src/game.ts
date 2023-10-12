@@ -338,7 +338,7 @@ export class PipeGame {
 
             const modelSelectGroup = document.createElement('div');
             modelSelectGroup.classList.add("select-model-group");
-            modelSelectGroup.classList.add("hidden");
+            modelSelectGroup.classList.add("hidden"); // TODO logic
 
             group.parts.forEach(part => {
                 if(!menuRef) return;
