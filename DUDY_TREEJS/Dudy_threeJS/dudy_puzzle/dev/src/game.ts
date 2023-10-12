@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { DragControls } from 'three/examples/jsm/controls/DragControls';
-import { GameConfig, Part, PIPE_SCALE, PIPE_POSITION_LEFT, PIPE_POSITION_RIGHT } from './parts';
+import { GameConfig, Part, PIPE_SCALE } from './parts';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 function resizeCanvas(canvas: HTMLCanvasElement) {
@@ -22,15 +22,11 @@ export class PipeGame {
     loader: THREE.TextureLoader;
     model_loader = new GLTFLoader();
     config: GameConfig;
-    pipes = new Map();
-    parts: [] = [];
     movables: THREE.Mesh[] = [];
     finished = false;
     startTime = 0;
     selected: THREE.Mesh | undefined;
-    piecesCount: number = 0;
-    pipesCount: number = 0;
-    scaleFactor = 3;
+    scaleFactor = 5;
     firstLoad = true;
     currentZIndex = 1;
 
@@ -64,24 +60,29 @@ export class PipeGame {
     }
 
     init() {
-        if(this.firstLoad){
-            this.initDragControls();
-            this.firstLoad = false;
-        }
-
+        this.initDragControls();
+        this.currentZIndex = 1;
         this.startTime = Date.now();
 
-        this.initParts();
-        this.renderToolsMenu();
-        this.renderSelectModelMenu();
+        if(this.firstLoad){
+            this.firstLoad = false;
+            // this.initParts();
+            this.renderToolsMenu();
+            this.renderSelectModelMenu();
+        }
+
+
 
     }
 
     restart() {
 
         for (const part of this.movables) {
+            console.log("-> part", part);
             this.scene.remove(part);
         }
+
+        this.movables = []
 
         this.init();
     }
@@ -138,37 +139,39 @@ export class PipeGame {
         this.renderer.render(this.scene, this.camera);
     }
 
-    initParts() {
-        // const pipe_config = this.config.pipeGroups[0].parts[0];
-        const pipe_config = this.config.pipeGroups;
-        if (!pipe_config) return;
-        for (const pipeGroup of this.config.pipeGroups) {
-            const startingCoordinates = pipeGroup.startingCoordinates;
-            for (const part of pipeGroup.parts) {
-                // this.addModelIntoScene(part)
-                // this.model_loader.load(`${part}.glb`, (gltf) => {
-                //     const model = gltf.scene.children[0] as THREE.Mesh;
-                //     const mat = model.material as THREE.MeshBasicMaterial;
-                //     mat.transparent = true;
-                //     if (mat.map)
-                //         mat.map.encoding = THREE.LinearEncoding;
-                //
-                //     model.scale.set(PIPE_SCALE, PIPE_SCALE, 1);
-                //     const piece = new Part(
-                //         this.initPartPosition(startingCoordinates.x, startingCoordinates.y),
-                //         model,
-                //         { x: 200, y: 200 }
-                //     );
-                //
-                //     this.movables.push(piece.mesh);
-                //     this.scene.add(piece.mesh);
-                // });
-            }
-        }
-    }
+    // initParts() {
+    //     // const pipe_config = this.config.pipeGroups[0].parts[0];
+    //     const pipe_config = this.config.pipeGroups;
+    //     if (!pipe_config) return;
+    //     for (const pipeGroup of this.config.pipeGroups) {
+    //         const startingCoordinates = pipeGroup.startingCoordinates;
+    //         for (const part of pipeGroup.parts) {
+    //             // this.addModelIntoScene(part)
+    //             // this.model_loader.load(`${part}.glb`, (gltf) => {
+    //             //     const model = gltf.scene.children[0] as THREE.Mesh;
+    //             //     const mat = model.material as THREE.MeshBasicMaterial;
+    //             //     mat.transparent = true;
+    //             //     if (mat.map)
+    //             //         mat.map.encoding = THREE.LinearEncoding;
+    //             //
+    //             //     model.scale.set(PIPE_SCALE, PIPE_SCALE, 1);
+    //             //     const piece = new Part(
+    //             //         this.initPartPosition(startingCoordinates.x, startingCoordinates.y),
+    //             //         model,
+    //             //         { x: 200, y: 200 }
+    //             //     );
+    //             //
+    //             //     this.movables.push(piece.mesh);
+    //             //     this.scene.add(piece.mesh);
+    //             // });
+    //         }
+    //     }
+    // }
 
     addModelIntoScene(part: string) {
+        console.log("-> called");
         this.model_loader.load(`${part}.glb`, (gltf) => {
+            console.log("-> INSIDE");
             const model = gltf.scene.children[0] as THREE.Mesh;
             const mat = model.material as THREE.MeshBasicMaterial;
             mat.transparent = true;
@@ -178,7 +181,7 @@ export class PipeGame {
 
             model.scale.set(PIPE_SCALE, PIPE_SCALE, 1);
             const piece = new Part(
-                this.initPartPosition(100, 100),
+                this.initPartPosition(0, 0),
                 model,
                 { x: 200, y: 200 }
             );
