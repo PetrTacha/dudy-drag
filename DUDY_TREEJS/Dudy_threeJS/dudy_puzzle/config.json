@@ -1,6 +1,13 @@
 {
   "backgroundImageUrl": "assets/bg.png",
   "winImg": "assets/button.png",
+  "icons": [
+    "assets/icons/toolPlus.svg",
+    "assets/icons/toolMinus.svg",
+    "assets/icons/toolRotateRight.svg",
+    "assets/icons/toolRotateLeft.svg",
+    "assets/icons/toolTrash.svg"
+  ],
   "pipeGroups": [
     {
       "name": "Borduny",
@@ -72,6 +79,5 @@
         "assets/zasobni_mech/mech8.glb"
       ]
     }
-
   ]
 }

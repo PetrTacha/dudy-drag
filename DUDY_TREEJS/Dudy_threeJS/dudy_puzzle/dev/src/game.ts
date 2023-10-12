@@ -1,8 +1,6 @@
 import * as THREE from 'three';
 import { DragControls } from 'three/examples/jsm/controls/DragControls';
 import { GameConfig, Part, PIPE_SCALE, PIPE_POSITION_LEFT, PIPE_POSITION_RIGHT } from './parts';
-import { Pipe } from './pipe';
-//import GLTF loader from examples
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 //margins for initial position generation
@@ -36,6 +34,7 @@ export class PipeGame {
     piecesCount: number = 0;
     pipesCount: number = 0;
     scaleFactor = 3;
+    firstLoad = true;
 
     constructor(config: GameConfig, canvas: HTMLCanvasElement) {
         canvas.width = 1919;
@@ -64,12 +63,16 @@ export class PipeGame {
     }
 
     init() {
+        if(this.firstLoad){
+            this.initDragControls();
+            this.firstLoad = false;
+        }
+
         this.startTime = Date.now();
 
         this.initParts();
         this.renderToolsMenu();
 
-        this.initDragControls();
     }
 
     restart() {
@@ -120,39 +123,10 @@ export class PipeGame {
         });
 
         dragControls.addEventListener('drag', () => {
-            if (this.selected && this.pipes.size > 0 && this.selected?.userData.piece.isOn() == true) {
-                let pipe_id = this.selected?.userData.piece.pipe_id;
-                this.selected?.userData.piece.snapOnPipe(this.pipes.get(pipe_id).position, this.scene)
-            } else {
-                this.selected?.position.setZ(100);
-            }
+            this.selected?.position.setZ(100);
         });
 
         dragControls.addEventListener('dragend', (event) => {
-            //this.selected?.position.setZ(this.selected?.userData.piece.layer);
-            if (this.selected && this.pipes.size > 0) {
-                let pipe_id = this.selected?.userData.piece.pipe_id;
-                if (this.selected.position.distanceTo(this.pipes.get(pipe_id).getPosition()) < REQUIRED_DISTANCE) {
-                    if (!this.pipes.get(pipe_id).isOnPipe(this.selected?.userData.piece.id)) {
-                        this.pipes.get(pipe_id).setLayer(this.selected?.userData.piece.layer);
-                        this.pipes.get(pipe_id).addPiece(this.selected?.userData.piece.id);
-
-                    }
-                    this.selected?.userData.piece.snapOnPipe(this.pipes.get(pipe_id).position, this.scene);
-                    // this.testGameFinished();
-                }
-                //drop to the floor
-                if (this.selected?.userData.piece.isOn() == false) {
-                    this.selected?.userData.piece.resetPosition();
-                }
-                //snap off the Pipe
-                if (this.selected?.userData.piece.isOn() == true && this.selected.position.distanceTo(this.pipes.get(pipe_id).getPosition()) > REQUIRED_DISTANCE) {
-                    this.selected?.userData.piece.snapOffPipe(this.scene);
-                    this.pipes.get(pipe_id).removePiece(this.selected?.userData.piece.id);
-                    this.pipes.get(pipe_id).removeLayer(this.selected?.userData.piece.layer);
-
-                }
-            }
         });
     }
 
@@ -186,14 +160,8 @@ export class PipeGame {
                     this.movables.push(piece.mesh);
                     this.scene.add(piece.mesh);
                 });
-
-
             }
         }
-
-
-
-
     }
 
     renderToolsMenu() {
@@ -202,22 +170,27 @@ export class PipeGame {
         const canvasToolMenu = document.createElement('div');
         canvasToolMenu.classList.add('canvas-tool-menu');
 
+        const a = this.config.icons[0];
+
 
         canvasToolMenu.innerHTML = `
-    <div class="tool" data-tool="plus">
-        PLUS
+    <div class="manipulation-tool">
+        <div class="tool" data-tool="plus">
+            <img class="tool-icon" src="${this.config.icons[0]}" alt="plus">
+        </div>
+        <div class="tool" data-tool="minus"> 
+           <img class="tool-icon" src="${this.config.icons[1]}" alt="minus">
+        </div>
+         <div class="tool" data-tool="rotateRight">
+            <img class="tool-icon" src="${this.config.icons[2]}" alt="rotateRight">
+        </div>
+        <div class="tool" data-tool="rotateLeft">
+            <img class="tool-icon" src="${this.config.icons[3]}" alt="rotateLeft">
+        </div>
     </div>
-    <div class="tool" data-tool="minus"> 
-        MINUS
-    </div>
-    <div class="tool" data-tool="rotateLeft">
-        ROTATE LEFT
-    </div>
-    <div class="tool" data-tool="rotateRight">
-    ROTATE RIGHT
-    </div>
-    <div class="tool" data-tool="reset">RESET</div>
-`;
+    <div class="tool trash-can" data-tool="reset">
+        <img class="tool-icon" src="${this.config.icons[4]}" alt="reset">
+    </div>`;
 
         /* Main menu is visible no need to restart game */
         const toolsBt = canvasToolMenu.querySelectorAll('.tool') as NodeList;
@@ -263,7 +236,7 @@ export class PipeGame {
         let randomY = Math.floor(Math.random() * 10);
         // return { x: position_x, y: position_y };
         //TODO split
-        return { x: x+randomX, y: y+randomY, z: 10 };
+        return { x: x + randomX, y: y + randomY, z: 10 };
     }
 
     private toolPlusEvent() {
@@ -296,7 +269,7 @@ export class PipeGame {
     private toolRotateEvent(direction: number) {
 
         if (!this.selected) return;
-        const angleInRadians = THREE.MathUtils.degToRad( direction * 15);
+        const angleInRadians = THREE.MathUtils.degToRad(direction * 15);
         const axisOfRotation = new THREE.Vector3(0, 0, 1);
 
         const boundingBox = new THREE.Box3().setFromObject(this.selected);

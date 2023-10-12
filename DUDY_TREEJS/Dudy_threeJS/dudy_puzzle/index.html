@@ -164,9 +164,11 @@
             position: absolute;
             right: 5rem;
             top: 5rem;
+            bottom: 5rem;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            justify-content: space-between;
+            pointer-events: none;
         }
 
         .tool{
@@ -179,6 +181,24 @@
             align-items: center;
             cursor: pointer;
             user-select: none;
+            pointer-events: all;
+        }
+
+        .manipulation-tool{
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .tool-icon{
+            width: 60%;
+            height: 60%;
+            pointer-events: none;
+        }
+
+        body{
+            width: 100vw;
+            height: 100vh;
         }
 
     </style>
@@ -214,10 +234,8 @@
         }
     </script>
 </head>
-<body>
-<div id="root"></div>
+<body id="root">
 <canvas id="canvas">Sorry, do not support canvas</canvas>
-
 <script src="bundle.js"></script>
 </body>
 </html>

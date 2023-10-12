@@ -28,6 +28,7 @@ export type GameConfig = {
     backgroundImageUrl: string,
     winImg: string;
     pipeGroups: PipeConfig[]
+    icons: string[]
 }
 
 
