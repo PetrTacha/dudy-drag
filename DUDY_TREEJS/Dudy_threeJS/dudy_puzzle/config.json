@@ -10,6 +10,7 @@
     ],
     "pipeGroups": [
         {
+            "id": "borduny",
             "name": "Borduny",
             "parts": [
                 "assets/borduny/b1",
@@ -17,17 +18,20 @@
             ]
         },
         {
+            "id": "dechovaTrubice",
             "name": "Dechová trubice",
             "parts": [
                 "assets/dechove_trubice/d1"
             ]
         },
         {
+            "id": "dmychaciMechy",
             "name": "Dmýchací měchy",
             "parts": [
             ]
         },
         {
+            "id": "halvy",
             "name": "Halvy",
             "parts": [
                 "assets/hlavy/h1",
@@ -37,6 +41,7 @@
             ]
         },
         {
+            "id": "melodickePistaly",
             "name": "Melodické píšťaly",
             "parts": [
                 "assets/melodicke_pistaly/p1",
@@ -47,6 +52,7 @@
             ]
         },
         {
+            "id": "zasobniMechy",
             "name": "Zásobní měchy",
             "parts": [
                 "assets/zasobni_mech/mech1",

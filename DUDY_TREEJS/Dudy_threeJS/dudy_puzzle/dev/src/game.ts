@@ -326,16 +326,29 @@ export class PipeGame {
 
     renderSelectModelMenu() {
         let menuRef = document.querySelector("#select-menu");
+        let selectModel = menuRef.querySelector(".select-model");
 
         this.config.pipeGroups.forEach(group => {
+            if(!menuRef)return;
+            let menuHeader = menuRef.querySelector(".select-header");
+            const headerTab = document.createElement('div');
+            headerTab.classList.add("menu-tab")
+            headerTab.innerHTML = group.name;
+            menuHeader?.appendChild(headerTab);
+
+            const modelSelectGroup = document.createElement('div');
+            modelSelectGroup.classList.add("select-model-group");
+            modelSelectGroup.classList.add("hidden");
+
             group.parts.forEach(part => {
                 if(!menuRef) return;
                 const imageWrapper = document.createElement('div');
                 imageWrapper.classList.add("insert-image");
                 imageWrapper.dataset.model = part;
                 imageWrapper.innerHTML = `<img src="${part}.png" alt="${part}">`
-                menuRef.appendChild(imageWrapper)
+                modelSelectGroup?.appendChild(imageWrapper)
             })
+            selectModel?.appendChild(modelSelectGroup);
 
         })
 

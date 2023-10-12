@@ -83,18 +83,62 @@
         }
 
         .select-menu {
-            right: 0;
-            top: 0;
-            /*position: absolute;*/
+            padding: 5rem 2rem ;
             background: #1A1A1A;
-            width: 30rem;
-            display: flex;
-            flex-wrap: wrap;
-            height: 100vh;
+            width: 620px;
 
-            overflow-y: scroll;
+            height: 1079px;
             z-index: 2;
             user-select: none;
+        }
+
+        .select-header{
+            display: grid;
+            grid-template-rows: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .menu-tab{
+            border: solid 3px #777777;
+            background: #1A1A1A;
+            padding: 1rem;
+            cursor: pointer;
+            border-radius: 20px;
+            text-align: center;
+            color: #777777;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+        .menu-tab.selected{
+            border: solid 3px #777777;
+            background: #777777;
+            color: #1A1A1A;
+        }
+
+
+        .select-model{
+            /*display: grid;*/
+            /*grid-template-columns: repeat(2, 1fr);*/
+            /*grid-template-rows: repeat(auto-fill, 1fr);*/
+            /*overflow-y: scroll;*/
+            padding-top: 3rem;
+            height: 100%;
+        }
+        .select-model-group{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(auto-fill, 1fr);
+            overflow-y: auto;
+        }
+
+        .select-model-group.hidden{
+            display: none;
         }
 
         .insert-image {
@@ -162,7 +206,10 @@
 <div class="container">
     <canvas id="canvas">Sorry, do not support canvas</canvas>
     <button id="restart" class="restart">Smazat vše</button>
-    <div id="select-menu" class="select-menu"></div>
+    <div id="select-menu" class="select-menu">
+        <div class="select-header"></div>
+        <div class="select-model"></div>
+    </div>
 </div>
 <script src="bundle.js"></script>
 </body>
