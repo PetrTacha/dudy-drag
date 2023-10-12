@@ -11,10 +11,6 @@
     "pipeGroups": [
         {
             "name": "Borduny",
-            "startingCoordinates": {
-                "x": 0,
-                "y": 0
-            },
             "parts": [
                 "assets/borduny/b1",
                 "assets/borduny/b2"
@@ -22,29 +18,17 @@
         },
         {
             "name": "Dechová trubice",
-            "startingCoordinates": {
-                "x": 300,
-                "y": 0
-            },
             "parts": [
                 "assets/dechove_trubice/d1"
             ]
         },
         {
             "name": "Dmýchací měchy",
-            "startingCoordinates": {
-                "x": 200,
-                "y": 200
-            },
             "parts": [
             ]
         },
         {
             "name": "Halvy",
-            "startingCoordinates": {
-                "x": 300,
-                "y": 300
-            },
             "parts": [
                 "assets/hlavy/h1",
                 "assets/hlavy/h2",
@@ -54,10 +38,6 @@
         },
         {
             "name": "Melodické píšťaly",
-            "startingCoordinates": {
-                "x": -300,
-                "y": 150
-            },
             "parts": [
                 "assets/melodicke_pistaly/p1",
                 "assets/melodicke_pistaly/p2",
@@ -68,10 +48,6 @@
         },
         {
             "name": "Zásobní měchy",
-            "startingCoordinates": {
-                "x": -800,
-                "y": 0
-            },
             "parts": [
                 "assets/zasobni_mech/mech1",
                 "assets/zasobni_mech/mech2",

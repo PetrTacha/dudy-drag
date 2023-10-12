@@ -46,7 +46,7 @@
             bottom: 5rem;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: space-around;
             pointer-events: none;
             z-index: 5;
         }
@@ -111,6 +111,20 @@
             height: 100%;
         }
 
+        .restart{
+            all: unset;
+            position: absolute;
+            bottom: 5rem;
+            left:5rem;
+            z-index: 5;
+            font-size: 2rem;
+            color: #777777;
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 5px;
+            user-select: none;
+        }
+
     </style>
     <script>
         fetch = (fn) => {
@@ -147,6 +161,7 @@
 <body id="root">
 <div class="container">
     <canvas id="canvas">Sorry, do not support canvas</canvas>
+    <button id="restart" class="restart">Smazat vše</button>
     <div id="select-menu" class="select-menu"></div>
 </div>
 <script src="bundle.js"></script>

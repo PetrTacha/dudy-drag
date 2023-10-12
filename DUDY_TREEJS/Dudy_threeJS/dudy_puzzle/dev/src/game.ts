@@ -240,7 +240,7 @@ export class PipeGame {
                         this.toolRotateEvent(-1);
                         break;
                     case "reset":
-                        this.restart();
+                        this.deleteSelected();
                         break;
                     default:
                         break;
@@ -248,6 +248,17 @@ export class PipeGame {
             }
         }
         root.appendChild(canvasToolMenu);
+    }
+
+    private deleteSelected() {
+        this.scene.remove(this.selected);//TODO types
+
+        for (let i = 0; i < this.movables.length; i++) {
+            if (this.movables[i].uuid === this.selected?.uuid) {
+                this.movables.splice(i, 1);
+                break;
+            }
+        }
     }
 
     private initPartPosition(x: number, y: number) {
@@ -263,11 +274,10 @@ export class PipeGame {
         let randomY = Math.floor(Math.random() * 10);
         // return { x: position_x, y: position_y };
         //TODO split
-        return { x: x + randomX, y: y + randomY, z: 10 };
+        return { x: x, y: y };
     }
 
     private toolPlusEvent() {
-        console.log("-> this.selected", this.selected);
         if (!this.selected) return;
         const boundingBox = new THREE.Box3().setFromObject(this.selected);
         const center = new THREE.Vector3();
@@ -330,8 +340,6 @@ export class PipeGame {
         })
 
         document.querySelectorAll(".insert-image").forEach(selectImage => {
-
-            console.log("-> selectImage", selectImage);
             //TODO to touchstart
             selectImage.addEventListener("click", e=>{
                 console.log("-> e.target", e.target?.dataset.model);
@@ -339,6 +347,10 @@ export class PipeGame {
             })
         })
 
+        //RESET ALL BUTTON
+        document.querySelector("#restart")?.addEventListener("click", () => {
+            this.restart()
+        })
     }
 
 }
