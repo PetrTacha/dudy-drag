@@ -64,13 +64,12 @@ export class PipeGame {
         this.currentZIndex = 1;
         this.startTime = Date.now();
 
-        if(this.firstLoad){
+        if (this.firstLoad) {
             this.firstLoad = false;
             // this.initParts();
             this.renderToolsMenu();
             this.renderSelectModelMenu();
         }
-
 
 
     }
@@ -100,15 +99,15 @@ export class PipeGame {
 
 
     updateZIndex() {
-        // I need to move z index of each movable to top on each other, but i have and camera on position z = 1000, so after that i have to reset z index and all movables
-        if(this.currentZIndex >= 999){
+        // I need to move z index of each movable to top on each other, but i have and camera on position z = 1000, so after that I have to reset z index and all movables
+        if (this.currentZIndex >= 999) {
             this.movables.forEach(mesh => {
                 mesh.position.setZ(1);
             })
             this.currentZIndex = 1
         }
         this.selected?.position.setZ(this.currentZIndex);
-        this.currentZIndex+=1;
+        this.currentZIndex += 1;
     }
 
 
@@ -118,19 +117,12 @@ export class PipeGame {
         dragControls.addEventListener('dragstart', (event) => {
             //get dragged mesh
             this.selected = event.object as THREE.Mesh;
-            // this.movables.forEach(mesh => {
-            //     mesh.position.setZ(10);
-            // })
-
             this.updateZIndex();
         });
 
         dragControls.addEventListener('drag', () => {
             this.selected?.position.setZ(this.currentZIndex);
 
-        });
-
-        dragControls.addEventListener('dragend', (event) => {
         });
     }
 
@@ -175,13 +167,13 @@ export class PipeGame {
             const model = gltf.scene.children[0] as THREE.Mesh;
             const mat = model.material as THREE.MeshBasicMaterial;
             mat.transparent = true;
-            console.log("-> this.canvas.width/2, this.canvas.height/2", this.canvas.width/2, this.canvas.height/2);
+            console.log("-> this.canvas.width/2, this.canvas.height/2", this.canvas.width / 2, this.canvas.height / 2);
             if (mat.map)
                 mat.map.encoding = THREE.LinearEncoding;
 
             model.scale.set(PIPE_SCALE, PIPE_SCALE, 1);
             const piece = new Part(
-                this.initPartPosition(0, 0),
+                { x: 0, y: 0 },
                 model,
                 { x: 200, y: 200 }
             );
@@ -261,21 +253,21 @@ export class PipeGame {
         }
     }
 
-    private initPartPosition(x: number, y: number) {
-        let position_x = -375;
-        let position_y = -50;
-
-        let random_offset_x = Math.floor(Math.random() * 300);
-        let random_offset_y = Math.floor(Math.random() * 100);
-        position_x += random_offset_x;
-        position_y += random_offset_y;
-
-        let randomX = Math.floor(Math.random() * 10);
-        let randomY = Math.floor(Math.random() * 10);
-        // return { x: position_x, y: position_y };
-        //TODO split
-        return { x: x, y: y };
-    }
+    // private initPartPosition(x: number, y: number) {
+    //     let position_x = -375;
+    //     let position_y = -50;
+    //
+    //     let random_offset_x = Math.floor(Math.random() * 300);
+    //     let random_offset_y = Math.floor(Math.random() * 100);
+    //     position_x += random_offset_x;
+    //     position_y += random_offset_y;
+    //
+    //     let randomX = Math.floor(Math.random() * 10);
+    //     let randomY = Math.floor(Math.random() * 10);
+    //     // return { x: position_x, y: position_y };
+    //
+    //     return { x: x, y: y };
+    // }
 
     private toolPlusEvent() {
         if (!this.selected) return;
@@ -326,22 +318,24 @@ export class PipeGame {
 
     renderSelectModelMenu() {
         let menuRef = document.querySelector("#select-menu");
-        let selectModel = menuRef.querySelector(".select-model");
+        let selectModel = menuRef?.querySelector(".select-model");
 
         this.config.pipeGroups.forEach(group => {
-            if(!menuRef)return;
+            if (!menuRef) return;
             let menuHeader = menuRef.querySelector(".select-header");
             const headerTab = document.createElement('div');
-            headerTab.classList.add("menu-tab")
+            headerTab.classList.add("menu-tab");
+            headerTab.dataset.groupid = `${group.id}`;
             headerTab.innerHTML = group.name;
             menuHeader?.appendChild(headerTab);
 
             const modelSelectGroup = document.createElement('div');
             modelSelectGroup.classList.add("select-model-group");
+            modelSelectGroup.dataset.groupid = `list-${group.id}`
             modelSelectGroup.classList.add("hidden"); // TODO logic
 
             group.parts.forEach(part => {
-                if(!menuRef) return;
+                if (!menuRef) return;
                 const imageWrapper = document.createElement('div');
                 imageWrapper.classList.add("insert-image");
                 imageWrapper.dataset.model = part;
@@ -354,11 +348,32 @@ export class PipeGame {
 
         document.querySelectorAll(".insert-image").forEach(selectImage => {
             //TODO to touchstart
-            selectImage.addEventListener("click", e=>{
-                console.log("-> e.target", e.target?.dataset.model);
+            selectImage.addEventListener("click", e => {
                 this.addModelIntoScene(e.target?.dataset.model);
             })
         })
+
+        document.querySelectorAll(".menu-tab").forEach(menuTab => {
+                menuTab.addEventListener("click", e => {
+                    document.querySelectorAll(".menu-tab").forEach(menuTab => {
+                        menuTab.classList.remove("selected");
+                    });
+
+                    menuTab.classList.add("selected");
+                    const groupId = e.target?.dataset.groupid;
+                    const list = document.querySelector(`[data-groupid="list-${groupId}"]`);
+
+                    document.querySelectorAll(".select-model-group").forEach(groupList => {
+                        groupList?.classList.add("hidden");
+                    })
+
+                    list?.classList.remove("hidden");
+
+                })
+
+            }
+        )
+
 
         //RESET ALL BUTTON
         document.querySelector("#restart")?.addEventListener("click", () => {
