@@ -185,3 +185,6 @@ Temporary Items
 
 #idea
 .idea
+
+#webpack bundle
+bundle.js

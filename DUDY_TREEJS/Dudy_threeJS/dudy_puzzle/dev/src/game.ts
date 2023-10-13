@@ -69,6 +69,7 @@ export class PipeGame {
             // this.initParts();
             this.renderToolsMenu();
             this.renderSelectModelMenu();
+            this.addEventListenersUI();
         }
 
 
@@ -243,12 +244,15 @@ export class PipeGame {
     }
 
     private deleteSelected() {
-        this.scene.remove(this.selected);//TODO types
 
-        for (let i = 0; i < this.movables.length; i++) {
-            if (this.movables[i].uuid === this.selected?.uuid) {
-                this.movables.splice(i, 1);
-                break;
+        if (this.selected) {
+            this.scene.remove(this.selected);
+
+            for (let i = 0; i < this.movables.length; i++) {
+                if (this.movables[i].uuid === this.selected?.uuid) {
+                    this.movables.splice(i, 1);
+                    break;
+                }
             }
         }
     }
@@ -343,13 +347,20 @@ export class PipeGame {
                 modelSelectGroup?.appendChild(imageWrapper)
             })
             selectModel?.appendChild(modelSelectGroup);
-
         })
 
+        //Select first group
+        document.querySelector(".menu-tab")?.classList.add("selected");
+        document.querySelector(".select-model-group")?.classList.remove("hidden");
+
+    }
+
+    addEventListenersUI() {
         document.querySelectorAll(".insert-image").forEach(selectImage => {
             //TODO to touchstart
             selectImage.addEventListener("click", e => {
-                this.addModelIntoScene(e.target?.dataset.model);
+                const target = e.target as HTMLButtonElement;
+                if (target?.dataset.model) this.addModelIntoScene(target.dataset.model);
             })
         })
 
@@ -360,7 +371,8 @@ export class PipeGame {
                     });
 
                     menuTab.classList.add("selected");
-                    const groupId = e.target?.dataset.groupid;
+                    const target = e.target as HTMLButtonElement;
+                    const groupId = target?.dataset.groupid;
                     const list = document.querySelector(`[data-groupid="list-${groupId}"]`);
 
                     document.querySelectorAll(".select-model-group").forEach(groupList => {
@@ -379,6 +391,8 @@ export class PipeGame {
         document.querySelector("#restart")?.addEventListener("click", () => {
             this.restart()
         })
+
+
     }
 
 }

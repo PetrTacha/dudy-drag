@@ -28,6 +28,7 @@
             /*margin-top: 10rem;*/
             overflow: hidden;
             position: relative;
+            justify-content: space-between;
         }
 
         #canvas {
@@ -36,7 +37,9 @@
             /*height: 70rem;*/
             z-index: 1;
             /*border: solid 2px #777777;*/
-            background: #1A1A1A;
+            /*background: #1A1A1A;*/
+            width: 1300px;
+            height: 1079px;
         }
 
         .canvas-tool-menu {
@@ -84,12 +87,17 @@
 
         .select-menu {
             padding: 5rem 2rem ;
-            background: #1A1A1A;
-            width: 620px;
+            /*background: #1A1A1A;*/
+            /*width: 620px;*/
 
-            height: 1079px;
+            flex: 1;
+            max-width: 620px;
+
+            /*height: 1079px;*/
             z-index: 2;
             user-select: none;
+            display: flex;
+            flex-direction: column;
         }
 
         .select-header{
@@ -121,20 +129,26 @@
             color: #1A1A1A;
         }
 
+        .tutorial-click{
+            margin: 2rem 1rem;
+            color: #777777;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
 
         .select-model{
-            /*display: grid;*/
-            /*grid-template-columns: repeat(2, 1fr);*/
-            /*grid-template-rows: repeat(auto-fill, 1fr);*/
-            /*overflow-y: scroll;*/
-            padding-top: 3rem;
-            height: 100%;
+            overflow-y: scroll;
+            padding-top: 1rem;
+            flex: 1;
         }
         .select-model-group{
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             grid-template-rows: repeat(auto-fill, 1fr);
-            overflow-y: auto;
+            gap: 30px;
+            /*overflow-y: scroll;*/
+            /*height: 100%;*/
         }
 
         .select-model-group.hidden{
@@ -143,7 +157,7 @@
 
         .insert-image {
             cursor: pointer;
-            height: 10rem;
+            height: 15rem;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -208,6 +222,7 @@
     <button id="restart" class="restart">Smazat vše</button>
     <div id="select-menu" class="select-menu">
         <div class="select-header"></div>
+        <div class="tutorial-click">Kliknutím přidáte části dud do scény</div>
         <div class="select-model"></div>
     </div>
 </div>
